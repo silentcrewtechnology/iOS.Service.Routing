@@ -75,7 +75,7 @@ final public class RouterService {
     }
     
     public func setWindow(
-        window: inout UIWindow?
+        window: UIWindow?
     ) {
         currentWindow = window
     }
