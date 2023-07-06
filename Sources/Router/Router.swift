@@ -66,11 +66,17 @@ final public class RouterService {
     // MARK: - Логика установки рутового контроллера
     public func setRootViewController(
         window: inout UIWindow?,
-        viewController rootViewController: UIViewController? = nil
+        viewController rootViewController: UIViewController
     ) {
         //создаем рутовый контроллер
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
+        currentWindow = window
+    }
+    
+    public func setWindow(
+        window: inout UIWindow?
+    ) {
         currentWindow = window
     }
     
