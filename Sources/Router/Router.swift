@@ -7,7 +7,7 @@ final public class RouterService {
     private var newNavigationVC: UINavigationController?
     private var currentWindow  : UIWindow?
     
-    var currentVC: UIViewController? {
+    public var currentVC: UIViewController? {
         self.currentWindow?.visibleViewController()
     }
     
