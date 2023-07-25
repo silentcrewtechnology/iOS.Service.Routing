@@ -15,8 +15,13 @@ final public class RouterService {
     
     // MARK: - Lazy
     private var navigationViewController: UINavigationController?{
-        self.currentWindow??.visibleViewController() as? UINavigationController
+        if let navigationController = self.currentWindow??.visibleViewController() as? UINavigationController {
+            return navigationController
+        } else {
+            return self.currentWindow??.visibleViewController()?.navigationController as? UINavigationController
+        }
     }
+    
     private var tabBarController: UITabBarController?
     
     // MARK: - Логика переключения в навигационном контроллере
@@ -31,7 +36,7 @@ final public class RouterService {
 //    public func setupNavigationVC(with navigationController: UINavigationController){
 //        self.navigationViewController = navigationController
 //    }
-//    
+//
 //    public func setTopNavigationVC(){
 //        self.navigationViewController = currentWindow??.visibleViewController() as? UINavigationController
 //    }
