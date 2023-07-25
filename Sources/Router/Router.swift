@@ -5,10 +5,12 @@ final public class RouterService {
     
     // MARK: - VC
     private var newNavigationVC: UINavigationController?
-    private var currentWindow  : UIWindow?
+    private var currentWindow  : UIWindow?? {
+        UIApplication.shared.delegate?.window
+    }
     
     public var currentVC: UIViewController? {
-        self.currentWindow?.visibleViewController()
+        self.currentWindow??.visibleViewController()
     }
     
     // MARK: - Lazy
@@ -65,19 +67,11 @@ final public class RouterService {
     
     // MARK: - Логика установки рутового контроллера
     public func setRootViewController(
-        window: inout UIWindow?,
         viewController rootViewController: UIViewController
     ) {
         //создаем рутовый контроллер
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
-        currentWindow = window
-    }
-    
-    public func setWindow(
-        window: UIWindow?
-    ) {
-        currentWindow = window
+        currentWindow??.rootViewController = rootViewController
+        currentWindow??.makeKeyAndVisible()
     }
     
     // MARK: - Логика отображения в контроле другой контроллер
