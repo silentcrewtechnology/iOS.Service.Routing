@@ -30,6 +30,10 @@ final public class RouterService {
         self.navigationViewController = navigationController
     }
     
+    public func setTopNavigationVC(){
+        self.navigationViewController = currentWindow??.visibleViewController() as? UINavigationController
+    }
+    
     public func setupTabBarControllerVC(with tabBarController: UITabBarController){
         self.tabBarController = tabBarController
     }
