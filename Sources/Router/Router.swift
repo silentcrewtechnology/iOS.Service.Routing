@@ -56,9 +56,13 @@ final public class RouterService {
         isNavigationBarHidden: Bool = false,
         animatedHidden: Bool = false,
         tintColor: UIColor = .blue,
-        backButtonTitle: String,
+        backButtonTitle: String = "",
+        rightBarButtonItem: UIBarButtonItem? = nil,
+        leftBarButtonItem: UIBarButtonItem? = nil,
         title: String
     ) {
+        self.navigationViewController?.navigationBar.backItem?.leftBarButtonItem = leftBarButtonItem
+        self.navigationViewController?.navigationBar.backItem?.rightBarButtonItem = rightBarButtonItem
         self.navigationViewController?.navigationBar.tintColor        = tintColor
         self.navigationViewController?.navigationBar.backItem?.title  = backButtonTitle
         self.navigationViewController?.navigationBar.isTranslucent    = true
