@@ -67,8 +67,13 @@ final public class RouterService {
         self.navigationViewController?.navigationBar.backItem?.title  = backButtonTitle
         self.navigationViewController?.navigationBar.isTranslucent    = true
         self.navigationViewController?.title                          = title
-        self.navigationViewController?.navigationItem.backButtonTitle = backButtonTitle
         self.navigationViewController?.navigationBar.shadowImage      = UIImage()
+        self.navigationViewController?.navigationItem.backBarButtonItem = .init(
+            title: backButtonTitle,
+            style: .plain,
+            target: nil,
+            action: nil
+        )
         self.navigationViewController?.setNavigationBarHidden(isNavigationBarHidden, animated: animatedHidden)
     }
     
