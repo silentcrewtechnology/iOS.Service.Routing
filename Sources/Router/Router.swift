@@ -5,15 +5,20 @@ final public class RouterService {
     
     // MARK: - VC
     private var newNavigationVC: UINavigationController?
-    private var currentWindow  : UIWindow?? {
-        UIApplication.shared.delegate?.window
+    private var currentWindow: UIWindow?? {
+        if #available(iOS 13, *) {
+            UIApplication.shared.windows.first
+        } else {
+            UIApplication.shared.delegate?.window
+        }
     }
+    
+    private var tabBarController: UITabBarController?
     
     public var currentVC: UIViewController? {
         self.currentWindow??.visibleViewController()
     }
     
-    // MARK: - Lazy
     private var navigationViewController: UINavigationController?{
         if let navigationController = self.currentWindow??.visibleViewController() as? UINavigationController {
             return navigationController
@@ -21,8 +26,6 @@ final public class RouterService {
             return self.currentWindow??.visibleViewController()?.navigationController as? UINavigationController
         }
     }
-    
-    private var tabBarController: UITabBarController?
     
     // MARK: - Логика переключения в навигационном контроллере
     public func pushMainNavigation(
@@ -33,7 +36,7 @@ final public class RouterService {
         self.navigationViewController?.pushViewController(viewController, animated: animated)
     }
     
-    public func setupTabBarControllerVC(with tabBarController: UITabBarController){
+    public func setupTabBarControllerVC(with tabBarController: UITabBarController) {
         self.tabBarController = tabBarController
     }
     
@@ -100,9 +103,6 @@ final public class RouterService {
         switch presentType {
             case .viewController(let viewController):
                 presentVC = viewController
-                // next
-            case .nextViewController(let viewController):
-                presentVC = viewController
             case .system(let system):
                 systemPush(with: system)
         }
@@ -141,7 +141,6 @@ final public class RouterService {
     public enum PresentType {
         case system(Systems)
         case viewController(UIViewController)
-        case nextViewController(UIViewController)
     }
     
     public func systemPush(with systems: Systems){
