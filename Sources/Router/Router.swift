@@ -32,7 +32,6 @@ final public class RouterService {
         to viewController: UIViewController,
         animated: Bool = false
     ) {
-        guard !self.isEqualTopVC(with: viewController) else { return }
         self.navigationViewController?.pushViewController(viewController, animated: animated)
     }
     
