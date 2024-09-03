@@ -54,6 +54,10 @@ final public class RouterService {
         self.navigationViewController?.popViewController(animated: true)
     }
     
+    public func popToRoot(animated: Bool){
+        self.navigationViewController?.popToRootViewController(animated: animated)
+    }
+    
     public func setupMainNavigationVC(
         isNavigationBarHidden: Bool = false,
         animatedHidden: Bool = false,
