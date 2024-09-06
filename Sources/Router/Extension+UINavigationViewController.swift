@@ -4,7 +4,7 @@
 
 import UIKit
 
-public extension UINavigationController {
+extension UINavigationController {
 	
 	func setRightLeftButton(
 		rightBarButtonItem: UIBarButtonItem?,
