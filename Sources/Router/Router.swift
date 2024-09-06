@@ -15,6 +15,7 @@ final public class RouterService {
     
     private var tabBarController: UITabBarController?
     
+    public var dismiss: () -> () = {}
     public var currentVC: UIViewController? {
         self.currentWindow??.visibleViewController()
     }
@@ -58,29 +59,38 @@ final public class RouterService {
         self.navigationViewController?.popToRootViewController(animated: animated)
     }
     
+    public func setRightLeftButton(
+        rightBarButtonItem: UIBarButtonItem?,
+        leftBarButtonItem: UIBarButtonItem?
+    ){
+        self.navigationViewController?.setRightLeftButton(
+            rightBarButtonItem: rightBarButtonItem,
+            leftBarButtonItem: leftBarButtonItem
+        )
+    }
+    
     public func setupMainNavigationVC(
         isNavigationBarHidden: Bool = false,
         animatedHidden: Bool = false,
         tintColor: UIColor = .blue,
         backButtonTitle: String = "",
-        rightBarButtonItem: UIBarButtonItem? = nil,
-        leftBarButtonItem: UIBarButtonItem? = nil,
-        title: String
+        title: String = "",
+        backgroundColor: UIColor = .clear
     ) {
-        self.navigationViewController?.navigationBar.backItem?.leftBarButtonItem = leftBarButtonItem
-        self.navigationViewController?.navigationBar.backItem?.rightBarButtonItem = rightBarButtonItem
-        self.navigationViewController?.navigationBar.tintColor        = tintColor
-        self.navigationViewController?.navigationBar.backItem?.title  = backButtonTitle
-        self.navigationViewController?.navigationBar.isTranslucent    = true
-        self.navigationViewController?.title                          = title
-        self.navigationViewController?.navigationBar.shadowImage      = UIImage()
-        self.navigationViewController?.navigationItem.backBarButtonItem = .init(
-            title: backButtonTitle,
-            style: .plain,
-            target: nil,
-            action: nil
+        self.navigationViewController?.setColor(
+            tintColor: tintColor,
+            backgroundColor: backgroundColor
         )
-        self.navigationViewController?.setNavigationBarHidden(isNavigationBarHidden, animated: animatedHidden)
+        self.navigationViewController?.setTitle(
+            title: title
+        )
+        self.navigationViewController?.setBackButton(
+            backButtonTitle: backButtonTitle
+        )
+        self.navigationViewController?.setHidden(
+            isNavigationBarHidden: isNavigationBarHidden,
+            animatedHidden: animatedHidden
+        )
     }
     
     // MARK: - Логика установки рутового контроллера
@@ -101,27 +111,40 @@ final public class RouterService {
         isSetCurrent: Bool = false,
         completion: @escaping () -> Void = {}
     ) {
-        guard !(currentVC == nil) else { return }
-        var presentVC: UIViewController?
         switch presentType {
             case .viewController(let viewController):
-                presentVC = viewController
+                present(
+                    with: viewController,
+                    animation: animation,
+                    transitionStyle: transitionStyle,
+                    presentationStyle: presentationStyle,
+                    completion: completion
+                )
+            case .onTabBar(let viewController):
+                presentOnTabBar(
+                    with: viewController,
+                    animation: animation,
+                    transitionStyle: transitionStyle,
+                    presentationStyle: presentationStyle,
+                    completion: completion
+                )
             case .system(let system):
                 systemPush(with: system)
         }
-        guard let presentVC = presentVC else { return }
-        currentVC?.present(
-            with: presentVC,
-            with: animation,
-            with: transitionStyle,
-            with: presentationStyle,
-            completion: completion
-        )
     }
     
     // MARK: - Логика возврата
-    public func dismiss(animated: Bool, completion: @escaping (() -> Void) = {}) {
-        self.currentVC?.dismiss(animated: animated, completion: completion)
+    public func dismiss(
+        animated: Bool,
+        completion: @escaping (() -> Void) = {}
+    ) {
+        self.currentVC?.dismiss(
+            animated: animated,
+            completion: {
+                completion()
+                self.dismiss()
+            }
+        )
     }
     
     // MARK: - Проверка
@@ -132,6 +155,7 @@ final public class RouterService {
         let isEqual         = viewController.contains(presentVCString)
         return isEqual
     }
+    
     private func isEqualNextVC(with nextVC: UIViewController) -> Bool {
         guard let currentVC = self.currentVC else { return false }
         let currentController = String(describing: Mirror(reflecting: currentVC).subjectType)
@@ -140,10 +164,45 @@ final public class RouterService {
         return isEqual
     }
     
+    private func present(
+        with presentVC: UIViewController?,
+        animation: Bool = true,
+        transitionStyle: UIModalTransitionStyle,
+        presentationStyle: UIModalPresentationStyle,
+        completion: @escaping () -> Void
+    ) {
+        guard let presentVC = presentVC else { return }
+        currentVC?.present(
+            with: presentVC,
+            with: animation,
+            with: transitionStyle,
+            with: presentationStyle,
+            completion: completion
+        )
+    }
+    
+    private func presentOnTabBar(
+        with presentVC: UIViewController?,
+        animation: Bool = true,
+        transitionStyle: UIModalTransitionStyle,
+        presentationStyle: UIModalPresentationStyle,
+        completion: @escaping () -> Void
+    ) {
+        guard let presentVC = presentVC else { return }
+        tabBarController?.present(
+            with: presentVC,
+            with: animation,
+            with: transitionStyle,
+            with: presentationStyle,
+            completion: completion
+        )
+    }
+    
     // MARK: - Тип перехода
     public enum PresentType {
         case system(Systems)
         case viewController(UIViewController)
+        case onTabBar(UIViewController)
     }
     
     public func systemPush(with systems: Systems){
