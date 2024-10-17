@@ -69,6 +69,30 @@ final public class RouterService {
         )
     }
     
+    public func navBarSetTitle(title: String) {
+        self.navigationViewController?.setTitle(
+            title: title
+        )
+    }
+    
+    public func navBarBackButton(title: String) {
+        self.navigationViewController?.setBackButtonTitle(
+            title: title)
+    }
+    
+    public func backButtonTintColor(
+        tintColor: UIColor
+    ) {
+        self.navigationViewController?.setBackButtonTintColor(
+            tintColor: tintColor
+        )
+    }
+    
+    public func navBarBackButtonHidden() {
+        self.navigationViewController?.hiddenBackButton()
+    }
+    
+    @available(iOS, deprecated, message: "Используй раздельные методы")
     public func setupMainNavigationVC(
         isNavigationBarHidden: Bool = false,
         animatedHidden: Bool = false,
@@ -84,8 +108,8 @@ final public class RouterService {
         self.navigationViewController?.setTitle(
             title: title
         )
-        self.navigationViewController?.setBackButton(
-            backButtonTitle: backButtonTitle
+        self.navigationViewController?.setBackButtonTitle(
+            title: backButtonTitle
         )
         self.navigationViewController?.setHidden(
             isNavigationBarHidden: isNavigationBarHidden,
