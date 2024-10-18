@@ -28,17 +28,35 @@ extension UINavigationController {
 		self.title = title
 	}
 	
-	func setBackButton(
-		backButtonTitle: String
-	) {
-		self.navigationBar.backItem?.title = backButtonTitle
+	func setBackButtonTitle(title: String) {
+		self.navigationBar.backItem?.title = title
 		self.navigationItem.backBarButtonItem = .init(
-			title: backButtonTitle,
+			title: title,
 			style: .plain,
 			target: nil,
 			action: nil
 		)
 	}
+    
+    func setBackButtonTintColor(
+        tintColor: UIColor = .clear
+    ) {
+        navigationItem.backBarButtonItem?.tintColor = tintColor
+        navigationBar.tintColor = tintColor
+    }
+    
+    func hiddenBackButton() {
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.backBarButtonItem = .init(
+            title: "",
+            style: .plain,
+            target: nil,
+            action: nil
+        )
+        navigationItem.backButtonTitle = nil
+        navigationItem.backBarButtonItem?.tintColor = .clear
+        navigationBar.tintColor = .clear
+    }
 	
 	func setHidden(
 		isNavigationBarHidden: Bool,
