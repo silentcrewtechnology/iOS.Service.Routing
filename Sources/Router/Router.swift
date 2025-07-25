@@ -222,6 +222,36 @@ final public class RouterService {
         )
     }
     
+    /// Заменяет верхний контроллер в стеке навигации на переданный.
+    public func replaceTopViewController(
+        with viewController: UIViewController,
+        animated: Bool = true
+    ) {
+        guard let nav = navigationViewController else { return }
+        var stack = nav.viewControllers
+        // Удаляем последний
+        _ = stack.popLast()
+        // Добавляем новый
+        stack.append(viewController)
+        // Устанавливаем обновлённый стек
+        nav.setViewControllers(stack, animated: animated)
+    }
+    
+    /// Пушит контроллер. Если выполняется условие shouldReplace,
+    /// то вместо пуша заменяет верхний экран.
+    public func push(
+        _ viewController: UIViewController,
+        replacing shouldReplace: (UIViewController) -> Bool,
+        animated: Bool = true
+    ) {
+        guard let nav = navigationViewController else { return }
+        if let top = nav.topViewController, shouldReplace(top) {
+            replaceTopViewController(with: viewController, animated: animated)
+        } else {
+            nav.pushViewController(viewController, animated: animated)
+        }
+    }
+    
     // MARK: - Тип перехода
     public enum PresentType {
         case system(Systems)
