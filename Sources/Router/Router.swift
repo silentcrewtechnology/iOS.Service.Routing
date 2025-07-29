@@ -279,3 +279,78 @@ final public class RouterService {
     public init() {}
 }
 
+extension RouterService {
+    // MARK: - Логика установки рутового контроллера
+    public func setRootToNewNavigation(
+        viewController rootViewController: UIViewController
+    ) {
+        //создаем рутовый контроллер
+        newNavigationVC = UINavigationController(rootViewController: rootViewController)
+        setRootViewController(viewController: newNavigationVC!)
+    }
+    
+    public func popToRootNewNavigation(animated: Bool){
+        self.newNavigationVC?.popToRootViewController(animated: animated)
+    }
+    
+    public func popNewNavigation(animated: Bool){
+        self.newNavigationVC?.popViewController(animated: true)
+    }
+    
+    public func pushNewNavigation(
+        to viewController: UIViewController,
+        animated: Bool = false
+    ) {
+        self.newNavigationVC?.pushViewController(viewController, animated: animated)
+    }
+    
+    /// Заменяет верхний контроллер в стеке навигации на переданный.
+    public func replaceTopViewControllerNewNavigation(
+        with viewController: UIViewController,
+        animated: Bool = true
+    ) {
+        guard let nav = newNavigationVC else { return }
+        var stack = nav.viewControllers
+        // Удаляем последний
+        _ = stack.popLast()
+        // Добавляем новый
+        stack.append(viewController)
+        // Устанавливаем обновлённый стек
+        nav.setViewControllers(stack, animated: animated)
+    }
+    
+    /// Пушит контроллер. Если выполняется условие shouldReplace,
+    /// то вместо пуша заменяет верхний экран.
+    public func pushNewNavigation(
+        _ viewController: UIViewController,
+        replacing shouldReplace: (UIViewController) -> Bool,
+        animated: Bool = true
+    ) {
+        guard let nav = newNavigationVC else { return }
+        if let top = nav.topViewController, shouldReplace(top) {
+            replaceTopViewControllerNewNavigation(with: viewController, animated: animated)
+        } else {
+            nav.pushViewController(viewController, animated: animated)
+        }
+    }
+}
+
+
+extension RouterService {
+    /// Откат в newNavigationVC до первого (или последнего) контроллера указанного типа
+    public func popNewNavigationToViewController<T: UIViewController>(
+        ofType type: T.Type,
+        animated: Bool = true
+    ) {
+        guard let nav = newNavigationVC else { return }
+        if let targetVC = nav.viewControllers.last(where: { $0 is T }) {
+            nav.popToViewController(targetVC, animated: animated)
+        }
+    }
+    
+    /// Проверяет, есть ли в стеке newNavigationVC контроллер указанного типа
+    public func containsNewNavigationViewController<T: UIViewController>(ofType type: T.Type) -> Bool {
+        guard let nav = newNavigationVC else { return false }
+        return nav.viewControllers.contains { $0 is T }
+    }
+}
